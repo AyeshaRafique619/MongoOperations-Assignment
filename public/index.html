@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MongoDB Operations UI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .operation-btn {
+            margin: 5px;
+        }
+        #results {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            min-height: 100px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4 mb-4">MongoDB Operations UI</h1>
+        
+        <!-- Basic CRUD Operations -->
+        <div class="section">
+            <h2>Create Item</h2>
+            <div class="row g-3 mb-3">
+                <div class="col-md-3">
+                    <input type="text" class="form-control" id="itemName" placeholder="Name">
+                </div>
+                <div class="col-md-3">
+                    <input type="text" class="form-control" id="itemCategory" placeholder="Category">
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" id="itemPrice" placeholder="Price">
+                </div>
+                <div class="col-md-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="itemInStock">
+                        <label class="form-check-label" for="itemInStock">In Stock</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-primary" id="insertOneBtn">Insert One</button>
+                </div>
+            </div>
+            <button class="btn btn-primary" id="findAllBtn">Find All</button>
+        </div>
+
+        <!-- Other Operations -->
+        <div class="section">
+            <h2>Other Operations</h2>
+            <div class="row mb-3">
+                <div class="col-md-2">
+                    <button class="btn btn-secondary operation-btn" id="countDocumentsBtn">Count Documents</button>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-secondary operation-btn" id="distinctCategoriesBtn">Distinct Categories</button>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-secondary operation-btn" id="sortByPriceBtn">Sort by Price</button>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-secondary operation-btn" id="limitBtn">Limit 3</button>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-secondary operation-btn" id="skipBtn">Skip 2</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Update/Delete -->
+        <div class="section">
+            <h2>Update/Delete</h2>
+            <div class="row g-3 mb-3">
+                <div class="col-md-3">
+                    <input type="text" class="form-control" id="itemId" placeholder="Item ID">
+                </div>
+                <div class="col-md-3">
+                    <input type="text" class="form-control" id="newName" placeholder="New Name">
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" id="newPrice" placeholder="New Price">
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-warning" id="updateOneBtn">Update One</button>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-danger" id="deleteOneBtn">Delete One</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aggregation -->
+        <div class="section">
+            <h2>Aggregation</h2>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <button class="btn btn-info operation-btn" id="groupByCategoryBtn">Group by Category</button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-info operation-btn" id="matchPriceBtn">Match Price > 100</button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-info operation-btn" id="projectBtn">Project Name & Price</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Operations -->
+        <div class="section">
+            <h2>Advanced Operations</h2>
+            <div class="row mb-3">
+                <div class="col">
+                    <button class="btn btn-dark operation-btn" id="createIndexBtn">Create Index</button>
+                    <button class="btn btn-dark operation-btn" id="getIndexesBtn">Get Indexes</button>
+                    <button class="btn btn-dark operation-btn" id="dropIndexBtn">Drop Index</button>
+                    <button class="btn btn-dark operation-btn" id="bulkWriteBtn">Bulk Write</button>
+                    <button class="btn btn-dark operation-btn" id="listCollectionsBtn">List Collections</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- More Operations -->
+        <div class="section">
+            <h2>More Operations</h2>
+            <!-- Find One Section -->
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="findOneItemId" placeholder="Item ID for Find One">
+                        <button class="btn btn-secondary" id="findOneBtn">Find One</button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-secondary" id="insertManyBtn">Insert Many</button>
+                </div>
+            </div>
+            
+            <!-- Update Many / Replace One Section -->
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <button class="btn btn-warning" id="updateManyBtn">Update Many (price < 50 to not in stock)</button>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="replaceItemId" placeholder="Item ID for Replace">
+                        <button class="btn btn-warning" id="replaceOneBtn">Replace One</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Delete Many Section -->
+            <div class="row g-3 mb-3">
+                <div class="col-md-12">
+                    <button class="btn btn-danger" id="deleteManyBtn">Delete Many (all not in stock)</button>
+                </div>
+            </div>
+            
+            <!-- Find One And Update -->
+            <div class="row g-3 mb-3">
+                <div class="col-md-5">
+                    <input type="text" class="form-control" id="findUpdateItemId" placeholder="Item ID">
+                </div>
+                <div class="col-md-5">
+                    <input type="text" class="form-control" id="findUpdateNewName" placeholder="New Name">
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-info" id="findOneAndUpdateBtn">Find One And Update</button>
+                </div>
+            </div>
+            
+            <!-- Find One And Delete -->
+            <div class="row g-3 mb-3">
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="findDeleteItemId" placeholder="Item ID">
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-info" id="findOneAndDeleteBtn">Find One And Delete</button>
+                </div>
+            </div>
+            
+            <!-- Find One And Replace -->
+            <div class="row g-3 mb-3">
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="findReplaceItemId" placeholder="Item ID">
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-info" id="findOneAndReplaceBtn">Find One And Replace</button>
+                </div>
+            </div>
+            
+            <!-- Collection Operations -->
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <button class="btn btn-danger" id="dropCollectionBtn">Drop Collection</button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-warning" id="renameCollectionBtn">Rename Collection</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden elements to maintain ID tracking functionality -->
+        <input type="hidden" id="lastUsedId">
+        <button class="d-none" id="copyIdBtn">Copy ID</button>
+
+        <!-- Results Display -->
+        <div class="section">
+            <h2>Results</h2>
+            <pre id="results">Execute an operation to see results here...</pre>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
