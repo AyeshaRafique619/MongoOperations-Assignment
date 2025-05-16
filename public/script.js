@@ -342,16 +342,27 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Validate MongoDB ObjectId format
     if (!/^[0-9a-fA-F]{24}$/.test(itemId)) {
-        displayResults({ 
+        displayResults({
             error: 'Invalid ID format. MongoDB ObjectIds must be 24 hexadecimal characters.'
         });
         return;
     }
     
-    await apiCall('findOneAndDelete', {
-        filter: { _id: itemId }
-    });
+    try {
+        const result = await apiCall('findOneAndDelete', {
+            filter: { _id: itemId }
+        });
+        
+        if (result.result === null) {
+            displayResults({ 
+                warning: `No document found with ID: ${itemId}. The document may not exist or was already deleted.`
+            });
+        }
+    } catch (error) {
+        displayResults({ error: `Delete operation failed: ${error.message}` });
+    }
 });
+
     
     // 21. bulkWrite - Perform bulk write operations
     document.getElementById('bulkWriteBtn').addEventListener('click', async () => {
@@ -395,23 +406,36 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Validate MongoDB ObjectId format
     if (!/^[0-9a-fA-F]{24}$/.test(itemId)) {
-        displayResults({ 
+        displayResults({
             error: 'Invalid ID format. MongoDB ObjectIds must be 24 hexadecimal characters.'
         });
         return;
     }
     
-    await apiCall('findOneAndReplace', {
-        filter: { _id: itemId },
-        replacement: {
-            name: 'Atomic Replaced Item',
-            category: 'Atomic',
-            price: 888,
-            inStock: true,
-            replacedAt: new Date()
-        },
-        options: { returnDocument: 'after' }
-    });
+    try {
+        const result = await apiCall('findOneAndReplace', {
+            filter: { _id: itemId },
+            replacement: {
+                name: 'Atomic Replaced Item',
+                category: 'Atomic',
+                price: 888,
+                inStock: true,
+                replacedAt: new Date()
+            },
+            options: { 
+                returnDocument: 'after',
+                upsert: false // Set to true if you want to insert when not found
+            }
+        });
+        
+        if (result.result === null) {
+            displayResults({ 
+                warning: `No document found with ID: ${itemId}. Verify that the document exists and the ID is correct.`
+            });
+        }
+    } catch (error) {
+        displayResults({ error: `Replace operation failed: ${error.message}` });
+    }
 });
 
     
